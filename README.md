@@ -16,7 +16,9 @@ class inputHTTP extends InputPort {
 }
 
 // Register with the server
+
 imp.configure("httpTest", [inputHTTP()], []);
+
 // End of code.
 
 ----------------------------
