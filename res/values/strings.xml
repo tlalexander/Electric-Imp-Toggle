@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, ElectricImpTestActivity!</string>
+    <string name="app_name">Electric Imp Test</string>
+    <string name="noQRCode">No QR Code Found</string>
+    <string name="requestError">There was an error processing the request.</string>
+
+</resources>

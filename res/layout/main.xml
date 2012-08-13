@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+
+
+    <Button
+        android:id="@+id/buttonOn"
+        android:layout_height="80dip"
+        android:text="Turn On"
+        android:layout_width="fill_parent"
+        android:layout_marginTop="50dip"
+		android:layout_marginLeft="50dip"
+		android:layout_marginRight="50dip"
+         />
+    
+        <Button
+        android:id="@+id/buttonOff"
+        android:layout_height="80dip"
+        android:text="Turn Off"
+        android:layout_width="fill_parent"
+        android:layout_marginTop="50dip"
+		android:layout_marginLeft="50dip"
+		android:layout_marginRight="50dip"
+         />
+        
+          <Button
+        android:id="@+id/buttonScan"
+        android:layout_height="80dip"
+        android:text="Scan code"
+        android:layout_width="fill_parent"
+        android:layout_marginTop="50dip"
+		android:layout_marginLeft="50dip"
+		android:layout_marginRight="50dip"
+         />
+
+</LinearLayout>

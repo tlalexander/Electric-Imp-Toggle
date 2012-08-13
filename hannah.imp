@@ -1,0 +1,148 @@
+//Hannah Http Test example code
+
+//I2C Addresses
+const i2c_ioexp = 0x7C;
+const i2c_temp  = 0x98;
+const i2c_als   = 0xE8;
+const i2c_accel = 0x38;
+
+//----------------------------------------
+//-- Configure I2C
+//----------------------------------------
+hardware.configure(I2C_89);
+local i2c = hardware.i2c89;
+
+local led_r = 0;
+local led_g = 0;
+local led_b = 0;
+//----------------------------------------
+//-- IO Expander Functions
+//----------------------------------------
+local function ioexp_read(addr) {
+    local result = i2c.read(i2c_ioexp, format("%c", addr), 1);
+    if (result == null) {
+        server.log("i2c read fail");
+        return -1;
+    } else return result[0];
+}
+
+local function ioexp_write(addr, data) {
+    i2c.write(i2c_ioexp, format("%c%c",addr, data));
+}
+
+local function ioexp_writebit(addr, bitn, level) {
+    // read modify write
+    local reg = ioexp_read(addr);
+    reg = (level==0)?(reg&~(1<<bitn)) : (reg | (1<<bitn));
+    ioexp_write(addr, reg)
+}
+
+local function ioexp_modify_write(addr, data, mask) {
+   local reg = ioexp_read(addr);
+   reg = (reg & ~mask) | (data & mask);
+   ioexp_write(addr, reg);
+}
+
+local function ioexp_setpin(gpio, level) {
+    ioexp_writebit(gpio>=8?0x10:0x11, gpio&7, level?1:0);
+}
+
+local function ioexp_setdir(gpio, output) {
+    ioexp_writebit(gpio>=8?0x0e:0x0f, gpio&7, output?0:1);
+}
+
+local function ioexp_setpullup(gpio, enable) {
+    ioexp_writebit(gpio>=8?0x06:0x07, gpio&7, enable);
+}
+
+local function ioexp_setirqmask(gpio, enable) {
+    ioexp_writebit(gpio>=8?0x12:0x13, gpio&7, enable);
+}
+
+local function ioexp_setirqedge(gpio, rising, falling) {
+    local addr = 0x17 - (gpio>>2);
+    local mask = 0x03 << ((gpio&3)<<1);
+    local data = (2*falling + rising) << ((gpio&3)<<1);    
+    ioexp_modify_write(addr, data, mask);
+}
+
+local function ioexp_clearirq(gpio) {
+    ioexp_writebit(gpio>=8?0x18:0x19, gpio&7, 1);
+}
+
+local function ioexp_readpin(gpio) {
+    return (ioexp_read(gpio>=8?0x10:0x11)&(1<<(gpio&7)))?1:0;
+}
+
+local function ioexp_setled(gpio, led) {
+    ioexp_writebit(gpio>=8?0x20:0x21, gpio&7, led);
+}
+
+local function ioexp_update_leds(r,g,b) {
+    if(r != null)
+        led_r = r;
+    if(g != null)
+        led_g = g;
+    if(b != null)
+        led_b = b;
+    ioexp_write(0x3b, led_g);
+    ioexp_write(0x40, led_b);
+    ioexp_write(0x45, led_r);
+}
+
+//LED Driver Enable
+ioexp_modify_write(0x01, 0xE0, 0xFF);
+ioexp_modify_write(0x0f, 0xE0, 0x00);
+ioexp_modify_write(0x0b, 0xE0, 0xFF);
+ioexp_modify_write(0x21, 0xE0, 0xFF);
+ioexp_write(0x1e, 0x50);
+ioexp_write(0x1f, 0x10);
+ioexp_update_leds(0,0,0);
+ioexp_setpin(5, 0);
+ioexp_setpin(6, 0);
+ioexp_setpin(7, 0);
+
+ioexp_update_leds(0,20,0);
+
+// Variable to represent LED state
+local ledState = 0;
+local step = 2;
+
+// blink function called every 100ms
+function blink()
+{
+    // Change state
+    if(ledState==50)
+    {
+        step=-2;
+    }else if(ledState==10){
+        step=2;
+    }
+    
+    ledState+=step;
+ 
+    // Reflect state to the pin
+    ioexp_update_leds(0,0,ledState);
+ 
+    // Schedule the next state change
+    imp.wakeup(0.05, blink);
+}
+
+
+server.log("Started");
+
+class inputHTTP extends InputPort {
+    function set(httpVal) {
+        server.log("Received value "+httpVal);
+    
+     // Reflect state to the pin
+    ioexp_update_leds(0,0,httpVal*50);
+ 
+    }    
+}
+
+// Register with the server
+imp.configure("httpTestHannah", [inputHTTP()], []);
+
+
+// End of code.
