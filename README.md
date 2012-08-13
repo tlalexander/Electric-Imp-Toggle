@@ -17,6 +17,7 @@ class inputHTTP extends InputPort {
 // Register with the server
 imp.configure("httpTest", [inputHTTP()], []);
 // End of code.
+
 ----------------------------
 
 The above code will take a value from an HTTP POST and display it in the server log. To use it, create a new imp code file, name it "http test", paste the contents above (whats in between the dashes) into the code file, and save it. Then go to your planner, hit "add node", and select "HTTP in". You may need to click in the planner to see it, but there should be a new node called "HTTP IN". Select your imp in the planner, click settings at the top right, and load the "http test" code. Then click the plus sign at the top right of the HTTP IN node, and connect it to your imp's node.
