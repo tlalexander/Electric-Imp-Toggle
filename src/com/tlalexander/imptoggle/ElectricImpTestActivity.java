@@ -40,7 +40,7 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
-import com.tlalexander.imptest.R;
+import com.tlalexander.imptoggle.R;
 
 
 /**
