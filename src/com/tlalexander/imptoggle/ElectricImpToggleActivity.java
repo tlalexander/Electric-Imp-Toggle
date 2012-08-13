@@ -52,7 +52,7 @@ import com.tlalexander.imptoggle.R;
 
 
 
-public class ElectricImpTestActivity extends Activity {
+public class ElectricImpToggleActivity extends Activity {
 	
 	
 	private Button buttonOn;
@@ -90,7 +90,7 @@ public class ElectricImpTestActivity extends Activity {
         buttonScan.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
             	
-            	   IntentIntegrator integrator = new IntentIntegrator(ElectricImpTestActivity.this);
+            	   IntentIntegrator integrator = new IntentIntegrator(ElectricImpToggleActivity.this);
             	   integrator.initiateScan(IntentIntegrator.QR_CODE_TYPES);
             	   
             }
